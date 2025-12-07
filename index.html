@@ -404,13 +404,15 @@
 
         /* Contact */
         .contact-box {
-            margin-top: 18px;
-            padding: 14px;
-            border-radius: 16px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--border);
-            font-size: 13px;
-        }
+    margin: 20px auto 0;              /* centrează cardul */
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    max-width: 420px;                 /* lățime controlată, nu cât tot containerul */
+}
+
 
         footer {
             border-top: 1px solid var(--border);
@@ -445,12 +447,11 @@
         }
         /* Contact form redesign */
 .contact-form {
-    margin-top: 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    max-width: 420px;
+    gap: 12px;                        /* mai puțin spațiu între câmpuri */
 }
+
 
 .form-group {
     display: flex;
@@ -504,6 +505,66 @@
 .contact-status {
     margin-top: 4px;
     font-size: 13px;
+}
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  font-size: 12px;
+  background: #020617;
+  color: var(--text-muted);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footer-app-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.footer-copy {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
+
+.footer-divider {
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .footer-inner {
+    align-items: flex-start;
+  }
 }
 
     </style>
@@ -731,7 +792,7 @@
 
                 <div class="form-group">
                     <label for="contact-message">Mesaj</label>
-                    <textarea id="contact-message" name="message" rows="5" required></textarea>
+                    <textarea id="contact-message" name="message" rows="4" required></textarea>
                 </div>
 
                 <button type="submit" class="btn">Trimite mesaj</button>
@@ -814,3 +875,4 @@
 
 </body>
 </html>
+
