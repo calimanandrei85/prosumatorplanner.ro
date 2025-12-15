@@ -46,11 +46,7 @@
             --border: #1f2937;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -59,10 +55,7 @@
             line-height: 1.6;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+        a { color: inherit; text-decoration: none; }
 
         .container {
             width: 100%;
@@ -115,13 +108,8 @@
             font-size: 14px;
         }
 
-        .nav-links a {
-            color: var(--text-muted);
-        }
-
-        .nav-links a:hover {
-            color: #f9fafb;
-        }
+        .nav-links a { color: var(--text-muted); }
+        .nav-links a:hover { color: #f9fafb; }
 
         .btn {
             border-radius: 999px;
@@ -158,14 +146,10 @@
             color: #fed7aa;
         }
 
-        main {
-            padding-bottom: 60px;
-        }
+        main { padding-bottom: 60px; }
 
         /* Hero */
-        .hero {
-            padding: 40px 0 20px;
-        }
+        .hero { padding: 40px 0 20px; }
 
         .hero-grid {
             display: grid;
@@ -217,11 +201,7 @@
             color: var(--text-muted);
         }
 
-        .hero-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .hero-meta span { display: inline-flex; align-items: center; gap: 6px; }
 
         .dot {
             width: 7px;
@@ -296,9 +276,7 @@
         }
 
         /* Sections */
-        section {
-            padding: 32px 0 8px;
-        }
+        section { padding: 32px 0 8px; }
 
         section h2 {
             font-size: 22px;
@@ -325,15 +303,8 @@
             border: 1px solid var(--border);
         }
 
-        .card h3 {
-            font-size: 15px;
-            margin-bottom: 6px;
-        }
-
-        .card p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+        .card h3 { font-size: 15px; margin-bottom: 6px; }
+        .card p { font-size: 13px; color: var(--text-muted); }
 
         .pill {
             display: inline-block;
@@ -373,17 +344,10 @@
             color: var(--text-muted);
         }
 
-        .price-list li::before {
-            content: "• ";
-            color: #22c55e;
-        }
+        .price-list li::before { content: "• "; color: #22c55e; }
 
         /* FAQ */
-        .faq-list {
-            margin-top: 16px;
-            display: grid;
-            gap: 10px;
-        }
+        .faq-list { margin-top: 16px; display: grid; gap: 10px; }
 
         .faq-item {
             padding: 10px 12px;
@@ -392,183 +356,126 @@
             border: 1px solid var(--border);
         }
 
-        .faq-item h3 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .faq-item p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+        .faq-item h3 { font-size: 14px; margin-bottom: 4px; }
+        .faq-item p { font-size: 13px; color: var(--text-muted); }
 
         /* Contact */
         .contact-box {
-    margin: 20px auto 0;              /* centrează cardul */
-    padding: 18px 20px;
-    border-radius: 16px;
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid var(--border);
-    font-size: 13px;
-    max-width: 420px;                 /* lățime controlată, nu cât tot containerul */
-}
+            margin: 20px auto 0;
+            padding: 18px 20px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            max-width: 420px;
+        }
 
+        /* Contact form redesign */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        footer {
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+        .form-group label {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.75);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus { border-color: var(--primary); }
+
+        /* Stylish submit button */
+        .contact-form button[type="submit"] {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            width: fit-content;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .contact-form button[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(8, 47, 35, 0.6);
+        }
+
+        /* Status message */
+        .contact-status { margin-top: 4px; font-size: 13px; }
+
+        .site-footer {
             border-top: 1px solid var(--border);
-            padding: 14px 0 22px;
+            padding: 16px 20px;
             font-size: 12px;
+            background: #020617;
             color: var(--text-muted);
         }
 
-        footer a {
-            color: var(--text-muted);
-            text-decoration: underline;
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
         }
+
+        .footer-left { display: flex; flex-direction: column; gap: 2px; }
+
+        .footer-app-name { font-weight: 600; color: var(--text-main); }
+
+        .footer-copy { font-size: 11px; color: var(--text-muted); }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a { color: var(--text-muted); text-decoration: none; }
+        .footer-links a:hover { color: var(--text-main); text-decoration: underline; }
+        .footer-divider { opacity: 0.6; }
 
         /* Responsive */
         @media (max-width: 840px) {
-            .hero-grid {
-                grid-template-columns: minmax(0, 1fr);
-            }
-            .hero-card {
-                margin-top: 10px;
-            }
-            .nav-links {
-                display: none;
-            }
+            .hero-grid { grid-template-columns: minmax(0, 1fr); }
+            .hero-card { margin-top: 10px; }
+            .nav-links { display: none; }
         }
 
         @media (max-width: 720px) {
             .features-grid,
-            .pricing-grid {
-                grid-template-columns: minmax(0, 1fr);
-            }
+            .pricing-grid { grid-template-columns: minmax(0, 1fr); }
         }
-        /* Contact form redesign */
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;                        /* mai puțin spațiu între câmpuri */
-}
 
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-group label {
-    font-size: 14px;
-    color: var(--text-main);
-    font-weight: 500;
-}
-
-.contact-form input,
-.contact-form textarea {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.75);
-    color: var(--text-main);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-color: var(--primary);
-}
-
-/* Stylish submit button */
-.contact-form button[type="submit"] {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    padding: 10px 18px;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    width: fit-content;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.contact-form button[type="submit"]:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(8, 47, 35, 0.6);
-}
-
-/* Status message */
-.contact-status {
-    margin-top: 4px;
-    font-size: 13px;
-}
-.site-footer {
-  border-top: 1px solid var(--border);
-  padding: 16px 20px;
-  font-size: 12px;
-  background: #020617;
-  color: var(--text-muted);
-}
-
-.footer-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.footer-left {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.footer-app-name {
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.footer-copy {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-}
-
-.footer-links a {
-  color: var(--text-muted);
-  text-decoration: none;
-}
-
-.footer-links a:hover {
-  color: var(--text-main);
-  text-decoration: underline;
-}
-
-.footer-divider {
-  opacity: 0.6;
-}
-
-@media (max-width: 600px) {
-  .footer-inner {
-    align-items: flex-start;
-  }
-}
-
+        @media (max-width: 600px) {
+            .footer-inner { align-items: flex-start; }
+        }
     </style>
 </head>
+
 <body>
 <header>
     <div class="container nav">
@@ -582,6 +489,7 @@
         <nav class="nav-links">
             <a href="#features">Funcționalități</a>
             <a href="#pricing">Prețuri</a>
+            <a href="live.html">Live API</a>
             <a href="#faq">Întrebări</a>
             <a href="#contact">Contact</a>
             <button class="btn btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">
@@ -610,6 +518,9 @@
                     </button>
                     <a href="#features" class="btn btn-ghost">
                         Vezi funcționalitățile
+                    </a>
+                    <a href="live.html" class="btn btn-ghost">
+                        Live API
                     </a>
                 </div>
                 <div class="hero-meta">
@@ -694,9 +605,9 @@
                     <p>Interfață în română, maghiară și engleză – utilă pentru familii mixte sau consultanți care lucrează cu mai multe piețe.</p>
                 </div>
                 <div class="card">
-                    <div class="pill">Premium</div>
-                    <h3>Funcții avansate</h3>
-                    <p>Export PDF/Excel, simulări avansate, scenarii cu baterii și tarife dinamice, plus suport prioritar – la un cost anual simbolic.</p>
+                    <div class="pill">Live</div>
+                    <h3>Live & istorice (API)</h3>
+                    <p>Monitorizare Live și endpoint-uri documentate (FREE + Premium). Vezi pagina dedicată: <a href="live.html" style="text-decoration:underline;">Live API</a>.</p>
                 </div>
             </div>
         </div>
@@ -720,6 +631,7 @@
                         <li>Grafic simplu producție vs consum</li>
                         <li>Calcule de bază pentru facturi</li>
                         <li>Salvare locală pe telefon</li>
+                        <li>Live FREE: snapshot + summary</li>
                     </ul>
                 </div>
                 <div class="card" style="border-color:#f97316;background:linear-gradient(135deg,#0f172a,#111827);">
@@ -732,6 +644,7 @@
                         <li>Conectare la invertor / NAS (acolo unde este posibil)</li>
                         <li>Export PDF / Excel pentru contabilitate</li>
                         <li>Backup criptat pe NAS-ul propriu</li>
+                        <li>Live Premium: history + grafice (agregare)</li>
                         <li>Suport prin e-mail în limba română</li>
                     </ul>
                 </div>
@@ -768,51 +681,51 @@
         </div>
     </section>
 
-   <!-- CONTACT -->
-<!-- CONTACT -->
-<section id="contact">
-    <div class="container">
-        <h2>Contact</h2>
-        <p class="section-subtitle">
-            Dacă ești prosumator, instalator sau distribuitor de echipamente și vrei să colaborezi sau să testezi aplicația,
-            scrie-ne un mesaj.
-        </p>
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="container">
+            <h2>Contact</h2>
+            <p class="section-subtitle">
+                Dacă ești prosumator, instalator sau distribuitor de echipamente și vrei să colaborezi sau să testezi aplicația,
+                scrie-ne un mesaj.
+            </p>
 
-        <div class="contact-box">
-            <form id="contact-form" class="contact-form">
-                <div class="form-group">
-                    <label for="contact-name">Nume</label>
-                    <input type="text" id="contact-name" name="name" required>
-                </div>
+            <div class="contact-box">
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Nume</label>
+                        <input type="text" id="contact-name" name="name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="contact-email">E-mail</label>
-                    <input type="email" id="contact-email" name="email" required>
-                </div>
+                    <div class="form-group">
+                        <label for="contact-email">E-mail</label>
+                        <input type="email" id="contact-email" name="email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="contact-message">Mesaj</label>
-                    <textarea id="contact-message" name="message" rows="4" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="contact-message">Mesaj</label>
+                        <textarea id="contact-message" name="message" rows="4" required></textarea>
+                    </div>
 
-                <button type="submit" class="btn">Trimite mesaj</button>
+                    <button type="submit">Trimite mesaj</button>
 
-                <p id="contact-status" class="contact-status"></p>
-            </form>
+                    <p id="contact-status" class="contact-status"></p>
+                </form>
+            </div>
         </div>
-    </div>
-</section>
-
+    </section>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-left">
       <span class="footer-app-name">ProsumatorPlanner</span>
-      <span class="footer-copy">© 2025 Andrei Căliman. Toate drepturile rezervate.</span>
+      <span class="footer-copy">© <span id="year">2025</span> Andrei Căliman. Toate drepturile rezervate.</span>
     </div>
 
     <div class="footer-links">
+      <a href="live.html">Live API</a>
+      <span class="footer-divider">•</span>
       <a href="privacy-policy.html">Privacy Policy</a>
       <span class="footer-divider">•</span>
       <a href="terms.html">Terms &amp; Conditions</a>
@@ -821,10 +734,12 @@
 </footer>
 
 <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('year').textContent = new Date().getFullYear();
 </script>
-    <script>
-  const CONTACT_API_URL = "http://100.99.61.55:3000/api/contact";
+
+<script>
+  // IMPORTANT: folosim domeniul public al API-ului (nu IP privat / tailscale)
+  const CONTACT_API_URL = "https://api.prosumatorplanner.ro/api/contact";
 
   const form = document.getElementById("contact-form");
   const statusEl = document.getElementById("contact-status");
@@ -848,9 +763,7 @@
     try {
       const response = await fetch(CONTACT_API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),
       });
 
@@ -866,8 +779,7 @@
       }
     } catch (error) {
       console.error("Eroare rețea:", error);
-      statusEl.textContent =
-        "Nu mă pot conecta la server. Reîncearcă mai târziu.";
+      statusEl.textContent = "Nu mă pot conecta la server. Reîncearcă mai târziu.";
       statusEl.style.color = "red";
     }
   });
@@ -875,4 +787,3 @@
 
 </body>
 </html>
-
