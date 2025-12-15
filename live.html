@@ -10,9 +10,7 @@
     :root{
       --primary:#0f766e;
       --primary-dark:#115e59;
-      --accent:#f97316;
       --bg:#0f172a;
-      --card-bg:#020617;
       --text-main:#e5e7eb;
       --text-muted:#9ca3af;
       --border:#1f2937;
@@ -20,9 +18,7 @@
       --ok:#86efac;
       --warn:#fde68a;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body{
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
@@ -32,11 +28,9 @@
       display: flex;
       flex-direction: column;
     }
-
     a{ color: inherit; text-decoration: none; }
     a:hover{ text-decoration: underline; }
 
-    /* Sticky header (similar to home) */
     header{
       position: sticky;
       top: 0;
@@ -45,7 +39,6 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
-
     .header-inner{
       max-width: 1100px;
       margin: 0 auto;
@@ -55,7 +48,6 @@
       align-items: center;
       gap: 12px;
     }
-
     .header-left{ display:flex; align-items:center; justify-content:flex-start; }
     .header-title{
       text-align:center;
@@ -64,14 +56,7 @@
       font-size: 1.05rem;
       white-space: nowrap;
     }
-    .header-right{
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      gap: 10px;
-      color: rgba(229,231,235,0.75);
-      font-size: 12px;
-    }
+    .header-right{ display:flex; align-items:center; justify-content:flex-end; gap: 10px; color: rgba(229,231,235,0.75); font-size: 12px; }
 
     .btn{
       border-radius: 999px;
@@ -89,31 +74,18 @@
     }
     .btn:hover{
       transform: translateY(-1px);
-      border-color: rgba(249,115,22,0.9);
+      border-color: rgba(34,197,94,0.6);
       box-shadow: 0 10px 25px rgba(15,23,42,0.35);
       text-decoration: none;
     }
-
     .btn-primary{
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       border-color: rgba(31,41,55,0.9);
       color: #ecfeff;
     }
-    .btn-primary:hover{
-      box-shadow: 0 14px 30px rgba(8,47,35,0.6);
-      border-color: rgba(34,197,94,0.6);
-    }
-
-    .btn-ghost{
-      background: rgba(2, 6, 23, 0.35);
-    }
-
-    .btn:disabled{
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
+    .btn-primary:hover{ box-shadow: 0 14px 30px rgba(8,47,35,0.6); }
+    .btn-ghost{ background: rgba(2, 6, 23, 0.35); }
+    .btn:disabled{ opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .icon{
       width: 22px;
@@ -151,17 +123,8 @@
       color: #6ee7b7;
       margin-bottom: 10px;
     }
-
-    h2{
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle{
-      color: var(--text-muted);
-      font-size: 14px;
-      max-width: 800px;
-    }
+    h2{ font-size: 22px; margin-bottom: 8px; }
+    .subtitle{ color: var(--text-muted); font-size: 14px; max-width: 800px; }
 
     .grid{
       display: grid;
@@ -176,15 +139,10 @@
       border-radius: 16px;
       padding: 14px;
     }
-
-    .card h3{
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
+    .card h3{ font-size: 14px; margin-bottom: 8px; }
 
     .form-group{ display:flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
     label{ font-size: 13px; color: var(--text-main); font-weight: 600; }
-
     input, textarea{
       padding: 10px 12px;
       border-radius: 10px;
@@ -196,12 +154,7 @@
     }
     input:focus, textarea:focus{ border-color: rgba(34,197,94,0.6); }
 
-    .actions{
-      display:flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .actions{ display:flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 
     .status{
       margin-top: 10px;
@@ -222,6 +175,15 @@
       background: rgba(2,6,23,0.45);
       font-size: 12px;
       color: rgba(229,231,235,0.85);
+      max-width: 100%;
+    }
+    .chip span.txt{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 720px;
+      display: inline-block;
+      vertical-align: bottom;
     }
     .dot{
       width: 8px;
@@ -240,7 +202,6 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
-
     .metric{
       background: rgba(15,23,42,0.85);
       border: 1px solid var(--border);
@@ -255,21 +216,8 @@
       letter-spacing: 0.12em;
       margin-bottom: 4px;
     }
-    .metric .value{
-      font-size: 16px;
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .metric .hint{
-      margin-top: 4px;
-      font-size: 12px;
-      color: rgba(229,231,235,0.8);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .metric .value{ font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .metric .hint{ margin-top: 4px; font-size: 12px; color: rgba(229,231,235,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     pre{
       margin-top: 10px;
@@ -283,7 +231,6 @@
       display:none;
     }
 
-    /* Footer identical to home */
     .site-footer{
       border-top: 1px solid var(--border);
       padding: 16px 20px;
@@ -303,12 +250,7 @@
     .footer-left{ display:flex; flex-direction: column; gap: 2px; }
     .footer-app-name{ font-weight: 700; color: var(--text-main); }
     .footer-copy{ font-size: 11px; color: var(--text-muted); }
-    .footer-links{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .footer-links{ display:flex; align-items:center; gap: 8px; flex-wrap: wrap; }
     .footer-links a{ color: var(--text-muted); text-decoration:none; }
     .footer-links a:hover{ color: var(--text-main); text-decoration: underline; }
     .footer-divider{ opacity: 0.6; }
@@ -317,6 +259,7 @@
       .grid{ grid-template-columns: 1fr; }
       .results{ grid-template-columns: 1fr; }
       .header-right{ display:none; }
+      .chip span.txt{ max-width: 92vw; }
     }
   </style>
 </head>
@@ -330,10 +273,7 @@
           Înapoi acasă
         </a>
       </div>
-
       <div class="header-title">ProsumatorPlanner – Live</div>
-
-      <!-- Swagger button removed by request -->
       <div class="header-right"></div>
     </div>
   </header>
@@ -357,19 +297,23 @@
           </div>
 
           <div class="form-group">
-            <label for="token">JWT Token (Bearer)</label>
+            <label for="token">Token JWT (Bearer)</label>
             <textarea id="token" rows="4" placeholder="Lipește aici token-ul (fără 'Bearer ')"></textarea>
           </div>
 
           <div class="actions">
-            <button class="btn btn-primary" id="btnLatest">Fetch latest</button>
-            <button class="btn btn-primary" id="btnSummary">Fetch summary</button>
-            <button class="btn btn-ghost" id="btnHistory">Fetch history (Premium)</button>
+            <button class="btn btn-primary" id="btnLatest">Preia ultimele valori</button>
+            <button class="btn btn-primary" id="btnSummary">Preia sumar</button>
+            <button class="btn btn-ghost" id="btnHistory">Istoric (Premium)</button>
           </div>
 
           <div class="status" id="statusRow">
-            <span class="chip"><span class="dot" id="statusDot"></span><span id="statusText">Status: aștept token.</span></span>
-            <span class="chip" id="apiHint">API: api.prosumatorplanner.ro</span>
+            <span class="chip">
+              <span class="dot" id="statusDot"></span>
+              <span class="txt" id="statusText">Status: aștept token.</span>
+            </span>
+            <span class="chip" id="apiHint"><span class="txt">API: api.prosumatorplanner.ro</span></span>
+            <span class="chip" id="lastUrlChip" style="display:none;"><span class="txt" id="lastUrlText">URL: —</span></span>
           </div>
         </div>
 
@@ -380,22 +324,22 @@
             <div class="metric">
               <div class="label">PV</div>
               <div class="value" id="pv">—</div>
-              <div class="hint" id="pvHint">kW (instant)</div>
+              <div class="hint">kW (instant)</div>
             </div>
             <div class="metric">
               <div class="label">House</div>
               <div class="value" id="house">—</div>
-              <div class="hint" id="houseHint">kW (instant)</div>
+              <div class="hint">kW (instant)</div>
             </div>
             <div class="metric">
               <div class="label">Grid</div>
               <div class="value" id="grid">—</div>
-              <div class="hint" id="gridHint">import / export kW</div>
+              <div class="hint">import / export kW</div>
             </div>
             <div class="metric">
               <div class="label">Battery</div>
               <div class="value" id="soc">—</div>
-              <div class="hint" id="socHint">SOC %</div>
+              <div class="hint">SOC %</div>
             </div>
             <div class="metric">
               <div class="label">Status</div>
@@ -405,11 +349,10 @@
             <div class="metric">
               <div class="label">Max PV today</div>
               <div class="value" id="maxpv">—</div>
-              <div class="hint" id="maxpvHint">kW (azi)</div>
+              <div class="hint">kW (azi)</div>
             </div>
           </div>
 
-          <!-- hidden by default; enable with ?debug=1 -->
           <pre id="raw"></pre>
         </div>
       </div>
@@ -443,6 +386,9 @@
     const statusDotEl = document.getElementById("statusDot");
     const rawEl = document.getElementById("raw");
 
+    const lastUrlChip = document.getElementById("lastUrlChip");
+    const lastUrlText = document.getElementById("lastUrlText");
+
     const elPv = document.getElementById("pv");
     const elHouse = document.getElementById("house");
     const elGrid = document.getElementById("grid");
@@ -454,6 +400,12 @@
     const btnLatest = document.getElementById("btnLatest");
     const btnSummary = document.getElementById("btnSummary");
     const btnHistory = document.getElementById("btnHistory");
+
+    function showLastUrl(url){
+      if (!DEBUG) return;
+      lastUrlChip.style.display = "inline-flex";
+      lastUrlText.textContent = `URL: ${url}`;
+    }
 
     function getAuthHeader() {
       const token = document.getElementById("token").value.trim();
@@ -522,12 +474,7 @@
       return undefined;
     }
 
-    function normalizeLatest(data) {
-      // Acceptă mai multe structuri (în caz că backend-ul diferă ușor):
-      // A) { ok, connected, last_update, latest:{...}, max_pv_kw_today }
-      // B) { ok, data:{ connected, last_update, latest:{...} ... } }
-      const root = data && data.data ? data.data : data;
-
+    function normalizeFromLatestLike(root) {
       const latest = safeGet(root, ["latest", "data.latest", "payload.latest"]) || {};
       const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
       const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "latest.ts", "latest.timestamp"]);
@@ -543,24 +490,27 @@
     }
 
     function normalizeSummary(data) {
-      // Acceptă mai multe structuri posibile:
-      // A) { ok, summary:{...}, connected, last_update, max_pv_kw_today }
-      // B) { ok, data:{ summary:{...} ... } }
       const root = data && data.data ? data.data : data;
-      const sum = safeGet(root, ["summary", "data.summary", "payload.summary"]) || root || {};
 
-      // Preferăm chei „summary”, dar dacă backend-ul întoarce direct câmpurile, merge și așa.
-      const pv = safeGet(sum, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
-      const house = safeGet(sum, ["house_kw", "load_kw", "house", "consumption_kw"]);
-      const gi = safeGet(sum, ["grid_import_kw", "gridImportKw", "import_kw"]);
-      const ge = safeGet(sum, ["grid_export_kw", "gridExportKw", "export_kw"]);
-      const soc = safeGet(sum, ["battery_soc", "soc", "batterySoc"]);
+      // 1) summary clasic
+      const sum = safeGet(root, ["summary", "data.summary", "payload.summary"]);
 
-      const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
-      const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "timestamp"]);
-      const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+      if (sum) {
+        const pv = safeGet(sum, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
+        const house = safeGet(sum, ["house_kw", "load_kw", "house", "consumption_kw"]);
+        const gi = safeGet(sum, ["grid_import_kw", "gridImportKw", "import_kw"]);
+        const ge = safeGet(sum, ["grid_export_kw", "gridExportKw", "export_kw"]);
+        const soc = safeGet(sum, ["battery_soc", "soc", "batterySoc"]);
 
-      return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
+        const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
+        const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "timestamp"]);
+        const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+
+        return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
+      }
+
+      // 2) fallback: dacă endpoint-ul summary întoarce de fapt structură de latest
+      return normalizeFromLatestLike(root);
     }
 
     function applyMetrics(m) {
@@ -580,6 +530,7 @@
     }
 
     async function fetchJsonOrText(url, headers) {
+      showLastUrl(url);
       const res = await fetch(url, { headers });
       const text = await res.text();
       let json = null;
@@ -590,17 +541,22 @@
     async function apiGetWithFallbacks(variantPaths) {
       const headers = getAuthHeader();
       if (!headers) {
-        setStatus("token lipsă (nu permitem acces fără autentificare).", "err");
+        setStatus("token lipsă (acces interzis fără autentificare).", "err");
         return null;
       }
 
       setLoading(true);
       setStatus("se încarcă…", "warn");
 
-      if (DEBUG) { rawEl.style.display = "none"; rawEl.textContent = ""; }
+      if (DEBUG) {
+        rawEl.style.display = "none";
+        rawEl.textContent = "";
+        lastUrlChip.style.display = "inline-flex";
+      } else {
+        lastUrlChip.style.display = "none";
+      }
 
-      // încercăm pe rând mai multe variante de path (pentru „Ruta nu a fost găsită”)
-      let lastError = null;
+      let last404 = null;
 
       for (const path of variantPaths) {
         const url = `${API_BASE}${path}`;
@@ -609,6 +565,7 @@
         if (res.ok) {
           setStatus("OK", "ok");
           setLoading(false);
+
           if (DEBUG) {
             rawEl.style.display = "block";
             rawEl.textContent = json ? JSON.stringify(json, null, 2) : text;
@@ -616,13 +573,11 @@
           return json ?? text;
         }
 
-        // dacă e 404, încercăm următoarea variantă
         if (res.status === 404) {
-          lastError = json?.message || json?.error || `404 on ${path}`;
+          last404 = `404 pe ${path}`;
           continue;
         }
 
-        // alte erori: arătăm mesajul și oprim
         const msg = (json && (json.message || json.error)) ? (json.message || json.error) : `HTTP ${res.status}`;
         setStatus(msg, "err");
 
@@ -634,24 +589,29 @@
         return null;
       }
 
-      setStatus(lastError || "Ruta nu a fost găsită.", "err");
+      setStatus(last404 || "Ruta nu a fost găsită.", "err");
       setLoading(false);
       return null;
     }
 
-    // Events
     btnLatest.addEventListener("click", async () => {
       const siteId = getSiteId();
       const encoded = encodeURIComponent(siteId);
 
-      // variantă principală + fallback (dacă backend-ul e /latest/:site_id)
+      // IMPORTANT: mai adaug câteva fallback-uri uzuale (siteId/site)
       const data = await apiGetWithFallbacks([
         `/api/live/latest?site_id=${encoded}`,
-        `/api/live/latest/${encoded}`
+        `/api/live/latest/${encoded}`,
+        `/api/live/latest?siteId=${encoded}`,
+        `/api/live/latest?site=${encoded}`,
+        `/api/v1/live/latest?site_id=${encoded}`,
+        `/live/latest?site_id=${encoded}`
       ]);
+
       if (!data) return;
 
-      const m = normalizeLatest(data);
+      const root = data && data.data ? data.data : data;
+      const m = normalizeFromLatestLike(root);
       applyMetrics(m);
     });
 
@@ -661,8 +621,12 @@
 
       const data = await apiGetWithFallbacks([
         `/api/live/summary?site_id=${encoded}`,
-        `/api/live/summary/${encoded}`
+        `/api/live/summary/${encoded}`,
+        `/api/live/summary?siteId=${encoded}`,
+        `/api/v1/live/summary?site_id=${encoded}`,
+        `/live/summary?site_id=${encoded}`
       ]);
+
       if (!data) return;
 
       const m = normalizeSummary(data);
@@ -673,7 +637,6 @@
       const siteId = getSiteId();
       const encoded = encodeURIComponent(siteId);
 
-      // interval default: ultimele 24h (UTC) + bucket 5
       const now = new Date();
       const to = now.toISOString();
       const from = new Date(now.getTime() - 24*60*60*1000).toISOString();
@@ -681,17 +644,14 @@
 
       const data = await apiGetWithFallbacks([
         `/api/live/history?site_id=${encoded}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`,
-        `/api/live/history/${encoded}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`
+        `/api/live/history/${encoded}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`,
+        `/api/v1/live/history?site_id=${encoded}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`
       ]);
 
-      // dacă e premium_required, e OK (backend-ul face treaba), doar rămân metricile neschimbate
       if (!data) return;
-
-      // Pentru history nu mapăm în carduri (încă). Dacă vrei, îl facem grafic în v2 (sau o listă compactă).
-      setStatus("history OK (debug only).", "ok");
+      setStatus("Istoric: OK (doar debug momentan).", "ok");
     });
 
-    // init
     clearMetrics();
     setStatus("aștept token.", "neutral");
   </script>
