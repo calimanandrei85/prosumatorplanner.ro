@@ -10,7 +10,6 @@
     :root{
       --primary:#0f766e;
       --primary-dark:#115e59;
-      --bg:#0f172a;
       --text-main:#e5e7eb;
       --text-muted:#9ca3af;
       --border:#1f2937;
@@ -257,7 +256,7 @@
 
     @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
-      .results{ grid-template-columns: 1fr; }
+      .results{ grid-template-columns: 1fr;oredsejk; } /* harmless if ignored by browser */
       .header-right{ display:none; }
       .chip span.txt{ max-width: 92vw; }
     }
@@ -401,6 +400,18 @@
     const btnSummary = document.getElementById("btnSummary");
     const btnHistory = document.getElementById("btnHistory");
 
+    function resetDebugUI() {
+      // la fiecare click, înainte de request: curățăm complet
+      rawEl.style.display = "none";
+      rawEl.textContent = "";
+      if (DEBUG) {
+        lastUrlChip.style.display = "inline-flex";
+        lastUrlText.textContent = "URL: —";
+      } else {
+        lastUrlChip.style.display = "none";
+      }
+    }
+
     function showLastUrl(url){
       if (!DEBUG) return;
       lastUrlChip.style.display = "inline-flex";
@@ -492,9 +503,7 @@
     function normalizeSummary(data) {
       const root = data && data.data ? data.data : data;
 
-      // 1) summary clasic
       const sum = safeGet(root, ["summary", "data.summary", "payload.summary"]);
-
       if (sum) {
         const pv = safeGet(sum, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
         const house = safeGet(sum, ["house_kw", "load_kw", "house", "consumption_kw"]);
@@ -509,7 +518,6 @@
         return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
       }
 
-      // 2) fallback: dacă endpoint-ul summary întoarce de fapt structură de latest
       return normalizeFromLatestLike(root);
     }
 
@@ -547,14 +555,7 @@
 
       setLoading(true);
       setStatus("se încarcă…", "warn");
-
-      if (DEBUG) {
-        rawEl.style.display = "none";
-        rawEl.textContent = "";
-        lastUrlChip.style.display = "inline-flex";
-      } else {
-        lastUrlChip.style.display = "none";
-      }
+      resetDebugUI();
 
       let last404 = null;
 
@@ -591,6 +592,8 @@
 
       setStatus(last404 || "Ruta nu a fost găsită.", "err");
       setLoading(false);
+      // IMPORTANT: nu lăsăm RAW-ul vechi pe ecran în caz de 404
+      resetDebugUI();
       return null;
     }
 
@@ -598,14 +601,17 @@
       const siteId = getSiteId();
       const encoded = encodeURIComponent(siteId);
 
-      // IMPORTANT: mai adaug câteva fallback-uri uzuale (siteId/site)
+      // FIX: încercăm întâi /api/live/latest (asta e ce lipsea)
       const data = await apiGetWithFallbacks([
         `/api/live/latest?site_id=${encoded}`,
         `/api/live/latest/${encoded}`,
         `/api/live/latest?siteId=${encoded}`,
         `/api/live/latest?site=${encoded}`,
+
+        // fallback-uri vechi (dacă ai mutat mountpoint-ul în alt mediu)
+        `/live/latest?site_id=${encoded}`,
         `/api/v1/live/latest?site_id=${encoded}`,
-        `/live/latest?site_id=${encoded}`
+        `/live/latest/${encoded}`
       ]);
 
       if (!data) return;
@@ -649,11 +655,18 @@
       ]);
 
       if (!data) return;
-      setStatus("Istoric: OK (doar debug momentan).", "ok");
+
+      // În debug, dacă e premium_required, îl vezi în RAW + status (corect)
+      if (typeof data === "object" && data && data.error === "premium_required") {
+        setStatus("Premium necesar.", "warn");
+      } else {
+        setStatus("Istoric: OK (doar debug momentan).", "ok");
+      }
     });
 
     clearMetrics();
     setStatus("aștept token.", "neutral");
+    resetDebugUI();
   </script>
 </body>
 </html>
