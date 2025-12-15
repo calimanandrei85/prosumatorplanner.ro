@@ -2,9 +2,9 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>ProsumatorPlanner – Live API</title>
+  <title>ProsumatorPlanner – Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ProsumatorPlanner Live API – monitorizare producție, consum, baterii și rețea. FREE și Premium." />
+  <meta name="description" content="ProsumatorPlanner Live – valori în timp real (cu autentificare)." />
 
   <style>
     :root{
@@ -16,71 +16,65 @@
       --text-main:#e5e7eb;
       --text-muted:#9ca3af;
       --border:#1f2937;
-      --page-bg:#f6f7f9;
-      --page-text:#111827;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    body{
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--page-bg);
-      color: var(--page-text);
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
       line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    a { color: inherit; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a{ color: inherit; text-decoration: none; }
+    a:hover{ text-decoration: underline; }
 
-    /* Sticky header */
-    header {
+    /* Sticky header (similar to home) */
+    header{
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(15, 23, 42, 0.95);
-      color: #fff;
-      border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+      background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
     }
 
     .header-inner{
       max-width: 1100px;
       margin: 0 auto;
-      padding: 12px 16px;
+      padding: 10px 16px;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       gap: 12px;
     }
 
-    .header-left{
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-    }
-
+    .header-left{ display:flex; align-items:center; justify-content:flex-start; }
     .header-title{
       text-align:center;
       font-weight: 800;
       letter-spacing: -0.02em;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       white-space: nowrap;
     }
-
     .header-right{
       display:flex;
       align-items:center;
       justify-content:flex-end;
       gap: 10px;
-      color: rgba(229,231,235,0.8);
+      color: rgba(229,231,235,0.75);
       font-size: 12px;
     }
 
-    .btn {
+    .btn{
       border-radius: 999px;
       padding: 8px 14px;
       font-size: 14px;
-      border: 1px solid rgba(31, 41, 55, 0.9);
+      border: 1px solid var(--border);
       cursor: pointer;
       font-weight: 600;
       display: inline-flex;
@@ -88,17 +82,26 @@
       gap: 8px;
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease, border-color 0.2s ease;
       background: rgba(2, 6, 23, 0.55);
-      color: #e5e7eb;
+      color: var(--text-main);
     }
-
     .btn:hover{
       transform: translateY(-1px);
-      border-color: rgba(249, 115, 22, 0.9);
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+      border-color: rgba(249,115,22,0.9);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.35);
       text-decoration: none;
     }
 
-    .btn .icon{
+    .btn-primary{
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-color: rgba(31,41,55,0.9);
+      color: #ecfeff;
+    }
+    .btn-primary:hover{
+      box-shadow: 0 14px 30px rgba(8,47,35,0.6);
+      border-color: rgba(34,197,94,0.6);
+    }
+
+    .icon{
       width: 22px;
       height: 22px;
       border-radius: 8px;
@@ -111,91 +114,163 @@
       font-size: 14px;
     }
 
-    main {
-      max-width: 900px;
+    main{
+      width: 100%;
+      max-width: 1100px;
       margin: 18px auto 0;
-      padding: 24px;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 16px 50px rgba(15,23,42,0.08);
+      padding: 0 16px 18px;
+      flex: 1;
     }
 
-    h2 {
-      margin-top: 32px;
-      border-bottom: 2px solid #e5e7eb;
-      padding-bottom: 6px;
-      font-size: 1.35rem;
+    .panel{
+      background: rgba(15,23,42,0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
     }
 
-    h3{
-      margin-top: 14px;
-      font-size: 1.05rem;
+    .kicker{
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6ee7b7;
+      margin-bottom: 10px;
     }
 
-    .box {
-      background: #f1f5f9;
-      padding: 16px;
+    h2{
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle{
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 800px;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card{
+      background: rgba(2,6,23,0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .card h3{
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .form-group{ display:flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    label{ font-size: 13px; color: var(--text-main); font-weight: 600; }
+
+    input, textarea{
+      padding: 10px 12px;
       border-radius: 10px;
-      margin: 16px 0;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,0.75);
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus, textarea:focus{ border-color: rgba(34,197,94,0.6); }
+
+    .actions{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
     }
 
-    pre {
+    .status{
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .results{
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric{
+      background: rgba(15,23,42,0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .metric .label{
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+    .metric .value{
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .metric .hint{
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(229,231,235,0.8);
+    }
+
+    pre{
+      margin-top: 10px;
       background: #0f172a;
       color: #e5e7eb;
       padding: 12px 14px;
-      border-radius: 10px;
-      display: block;
-      overflow-x: auto;
-      font-size: 0.9rem;
+      border-radius: 12px;
       border: 1px solid rgba(31,41,55,0.9);
+      overflow-x: auto;
+      font-size: 12px;
+      display:none; /* nu mai arătăm “comenzi GET” */
     }
 
-    .tag-free { color: #065f46; font-weight: 800; }
-    .tag-premium { color: #7c2d12; font-weight: 800; }
-
-    /* Footer identical to main page */
-    .site-footer {
-      margin-top: 24px;
+    /* Footer identical to home */
+    .site-footer{
       border-top: 1px solid var(--border);
       padding: 16px 20px;
       font-size: 12px;
       background: #020617;
       color: var(--text-muted);
     }
-
-    .footer-inner {
+    .footer-inner{
       max-width: 1100px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       flex-wrap: wrap;
     }
-
-    .footer-left { display: flex; flex-direction: column; gap: 2px; }
-
-    .footer-app-name { font-weight: 700; color: var(--text-main); }
-
-    .footer-copy { font-size: 11px; color: var(--text-muted); }
-
-    .footer-links {
-      display: flex;
-      align-items: center;
+    .footer-left{ display:flex; flex-direction: column; gap: 2px; }
+    .footer-app-name{ font-weight: 700; color: var(--text-main); }
+    .footer-copy{ font-size: 11px; color: var(--text-muted); }
+    .footer-links{
+      display:flex;
+      align-items:center;
       gap: 8px;
-      font-size: 12px;
       flex-wrap: wrap;
     }
+    .footer-links a{ color: var(--text-muted); text-decoration:none; }
+    .footer-links a:hover{ color: var(--text-main); text-decoration: underline; }
+    .footer-divider{ opacity: 0.6; }
 
-    .footer-links a { color: var(--text-muted); text-decoration: none; }
-    .footer-links a:hover { color: var(--text-main); text-decoration: underline; }
-    .footer-divider { opacity: 0.6; }
-
-    @media (max-width: 640px){
-      .header-title{ font-size: 1rem; }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+      .results{ grid-template-columns: 1fr; }
       .header-right{ display:none; }
-      main{ margin: 12px 10px 0; padding: 18px; }
     }
   </style>
 </head>
@@ -210,63 +285,86 @@
         </a>
       </div>
 
-      <div class="header-title">ProsumatorPlanner – Live API</div>
+      <div class="header-title">ProsumatorPlanner – Live</div>
 
       <div class="header-right">
-        API: api.prosumatorplanner.ro
+        <a class="btn" href="https://api.prosumatorplanner.ro/docs" target="_blank" rel="noopener">Swagger</a>
       </div>
     </div>
   </header>
 
   <main>
-    <p>
-      <strong>Live API</strong> oferă monitorizare în timp real pentru sisteme fotovoltaice:
-      producție, consum, rețea, baterii și EV.
-    </p>
+    <div class="panel">
+      <div class="kicker">Live · Autentificat · Real-time</div>
+      <h2>Live UI (doar cu autentificare)</h2>
+      <p class="subtitle">
+        Această pagină nu expune date publice. Pentru a vedea valori, introdu un token JWT valid.
+        Token-ul este folosit doar în browser-ul tău pentru a apela API-ul.
+      </p>
 
-    <h2>Live FREE</h2>
-    <div class="box">
-      <p class="tag-free">Disponibil gratuit tuturor utilizatorilor</p>
-      <ul>
-        <li>Snapshot Live curent</li>
-        <li>Status conectare</li>
-        <li>Maxim producție PV azi</li>
-      </ul>
+      <div class="grid">
+        <div class="card">
+          <h3>Autentificare</h3>
+
+          <div class="form-group">
+            <label for="siteId">Site ID</label>
+            <input id="siteId" type="number" min="1" step="1" value="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="token">JWT Token (Bearer)</label>
+            <textarea id="token" rows="4" placeholder="Lipește aici token-ul (fără 'Bearer ')"></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="btnLatest">Fetch latest</button>
+            <button class="btn btn-primary" id="btnSummary">Fetch summary</button>
+            <button class="btn" id="btnHistory">Fetch history (Premium)</button>
+          </div>
+
+          <div class="status" id="status">Status: aștept token.</div>
+        </div>
+
+        <div class="card">
+          <h3>Rezultate</h3>
+
+          <div class="results" id="results">
+            <div class="metric">
+              <div class="label">PV</div>
+              <div class="value" id="pv">—</div>
+              <div class="hint">kW (instant)</div>
+            </div>
+            <div class="metric">
+              <div class="label">House</div>
+              <div class="value" id="house">—</div>
+              <div class="hint">kW (instant)</div>
+            </div>
+            <div class="metric">
+              <div class="label">Grid</div>
+              <div class="value" id="grid">—</div>
+              <div class="hint">import/export kW</div>
+            </div>
+            <div class="metric">
+              <div class="label">Battery</div>
+              <div class="value" id="soc">—</div>
+              <div class="hint">SOC %</div>
+            </div>
+            <div class="metric">
+              <div class="label">Status</div>
+              <div class="value" id="connected">—</div>
+              <div class="hint">connected / last_update</div>
+            </div>
+            <div class="metric">
+              <div class="label">Max PV today</div>
+              <div class="value" id="maxpv">—</div>
+              <div class="hint">kW (azi)</div>
+            </div>
+          </div>
+
+          <pre id="raw"></pre>
+        </div>
+      </div>
     </div>
-
-    <h3>Endpoint: latest</h3>
-    <pre>GET https://api.prosumatorplanner.ro/api/live/latest?site_id=1</pre>
-
-    <h3>Endpoint: summary</h3>
-    <pre>GET https://api.prosumatorplanner.ro/api/live/summary?site_id=1</pre>
-
-    <h2>Live Premium</h2>
-    <div class="box">
-      <p class="tag-premium">Necesită abonament Premium</p>
-      <ul>
-        <li>Istoric producție și consum</li>
-        <li>Agregare pe interval (grafice)</li>
-        <li>Suport baterii și EV</li>
-      </ul>
-    </div>
-
-    <h3>Endpoint: history (Premium)</h3>
-    <pre>GET https://api.prosumatorplanner.ro/api/live/history?site_id=1&from=2025-12-14T00:00:00Z&to=2025-12-14T23:59:59Z&bucket_minutes=5</pre>
-
-    <h2>Documentație completă</h2>
-    <p>
-      Swagger UI (OpenAPI):<br />
-      <a href="https://api.prosumatorplanner.ro/docs" target="_blank" rel="noopener">
-        https://api.prosumatorplanner.ro/docs
-      </a>
-    </p>
-
-    <h2>Status API</h2>
-    <pre>GET https://api.prosumatorplanner.ro/api/health</pre>
-
-    <p style="margin-top:12px;">
-      ProsumatorPlanner este construit pentru prosumatori reali, cu accent pe claritate, transparență și date reale.
-    </p>
   </main>
 
   <footer class="site-footer">
@@ -277,7 +375,7 @@
       </div>
 
       <div class="footer-links">
-        <a href="live.html">Live API</a>
+        <a href="live.html">Live</a>
         <span class="footer-divider">•</span>
         <a href="privacy-policy.html">Privacy Policy</a>
         <span class="footer-divider">•</span>
@@ -288,6 +386,129 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const API_BASE = "https://api.prosumatorplanner.ro";
+    const statusEl = document.getElementById("status");
+    const rawEl = document.getElementById("raw");
+
+    const elPv = document.getElementById("pv");
+    const elHouse = document.getElementById("house");
+    const elGrid = document.getElementById("grid");
+    const elSoc = document.getElementById("soc");
+    const elConnected = document.getElementById("connected");
+    const elMaxPv = document.getElementById("maxpv");
+
+    function getAuthHeader() {
+      const token = document.getElementById("token").value.trim();
+      if (!token) return null;
+      return { "Authorization": `Bearer ${token}` };
+    }
+
+    function getSiteId() {
+      const v = Number(document.getElementById("siteId").value);
+      return Number.isFinite(v) && v > 0 ? v : 1;
+    }
+
+    function setStatus(msg, isError=false) {
+      statusEl.textContent = `Status: ${msg}`;
+      statusEl.style.color = isError ? "#fca5a5" : "";
+    }
+
+    function fmtNum(v) {
+      if (v === null || v === undefined || v === "") return "—";
+      const n = Number(v);
+      if (!Number.isFinite(n)) return String(v);
+      return n.toFixed(3).replace(/\.?0+$/,""); // 2.350 -> 2.35
+    }
+
+    function updateFromLatest(data) {
+      // așteptăm structura din backend: { ok, site_id, connected, last_update, latest, max_pv_kw_today }
+      const latest = data.latest || {};
+      elPv.textContent = fmtNum(latest.pv_kw);
+      elHouse.textContent = fmtNum(latest.house_kw);
+
+      // grid import/export afișăm compact
+      const gi = fmtNum(latest.grid_import_kw);
+      const ge = fmtNum(latest.grid_export_kw);
+      elGrid.textContent = `${gi} / ${ge}`;
+
+      elSoc.textContent = (latest.battery_soc === null || latest.battery_soc === undefined) ? "—" : `${latest.battery_soc}%`;
+
+      const conn = data.connected ? "connected" : "not connected";
+      const lu = data.last_update ? new Date(data.last_update).toISOString() : "—";
+      elConnected.textContent = conn;
+      elConnected.nextElementSibling && (elConnected.nextElementSibling.textContent = `connected / last_update: ${lu}`);
+
+      elMaxPv.textContent = fmtNum(data.max_pv_kw_today);
+    }
+
+    async function apiGet(path) {
+      const headers = getAuthHeader();
+      if (!headers) {
+        setStatus("token lipsă (nu permitem acces fără autentificare).", true);
+        return null;
+      }
+
+      setStatus("se încarcă…");
+      rawEl.style.display = "none";
+      rawEl.textContent = "";
+
+      const url = `${API_BASE}${path}`;
+      const res = await fetch(url, { headers });
+      const text = await res.text();
+
+      let json = null;
+      try { json = JSON.parse(text); } catch(_) {}
+
+      if (!res.ok) {
+        const msg = (json && (json.message || json.error)) ? (json.message || json.error) : `HTTP ${res.status}`;
+        setStatus(msg, true);
+
+        // pentru debug (doar dacă vrei): afișăm răspunsul brut
+        rawEl.style.display = "block";
+        rawEl.textContent = text;
+        return null;
+      }
+
+      setStatus("OK");
+      return json ?? text;
+    }
+
+    document.getElementById("btnLatest").addEventListener("click", async () => {
+      const siteId = getSiteId();
+      const data = await apiGet(`/api/live/latest?site_id=${encodeURIComponent(siteId)}`);
+      if (!data) return;
+
+      updateFromLatest(data);
+      rawEl.style.display = "block";
+      rawEl.textContent = JSON.stringify(data, null, 2);
+    });
+
+    document.getElementById("btnSummary").addEventListener("click", async () => {
+      const siteId = getSiteId();
+      const data = await apiGet(`/api/live/summary?site_id=${encodeURIComponent(siteId)}`);
+      if (!data) return;
+
+      // summary poate fi diferit ca structură; îl arătăm ca raw (și apoi rafinăm)
+      rawEl.style.display = "block";
+      rawEl.textContent = JSON.stringify(data, null, 2);
+    });
+
+    document.getElementById("btnHistory").addEventListener("click", async () => {
+      const siteId = getSiteId();
+
+      // interval default: ultimele 24h (UTC) + bucket 5
+      const now = new Date();
+      const to = now.toISOString();
+      const from = new Date(now.getTime() - 24*60*60*1000).toISOString();
+      const bucket = 5;
+
+      const data = await apiGet(`/api/live/history?site_id=${encodeURIComponent(siteId)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`);
+      if (!data) return;
+
+      rawEl.style.display = "block";
+      rawEl.textContent = JSON.stringify(data, null, 2);
+    });
   </script>
 </body>
 </html>
