@@ -16,6 +16,9 @@
       --text-main:#e5e7eb;
       --text-muted:#9ca3af;
       --border:#1f2937;
+      --danger:#fca5a5;
+      --ok:#86efac;
+      --warn:#fde68a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -99,6 +102,17 @@
     .btn-primary:hover{
       box-shadow: 0 14px 30px rgba(8,47,35,0.6);
       border-color: rgba(34,197,94,0.6);
+    }
+
+    .btn-ghost{
+      background: rgba(2, 6, 23, 0.35);
+    }
+
+    .btn:disabled{
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .icon{
@@ -193,7 +207,32 @@
       margin-top: 10px;
       font-size: 13px;
       color: var(--text-muted);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
     }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.45);
+      font-size: 12px;
+      color: rgba(229,231,235,0.85);
+    }
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(156,163,175,0.8);
+      box-shadow: 0 0 0 4px rgba(156,163,175,0.10);
+    }
+    .dot.ok{ background: var(--ok); box-shadow: 0 0 0 4px rgba(134,239,172,0.12); }
+    .dot.err{ background: var(--danger); box-shadow: 0 0 0 4px rgba(252,165,165,0.10); }
+    .dot.warn{ background: var(--warn); box-shadow: 0 0 0 4px rgba(253,230,138,0.10); }
 
     .results{
       margin-top: 16px;
@@ -207,6 +246,7 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
+      min-height: 86px;
     }
     .metric .label{
       color: var(--text-muted);
@@ -218,11 +258,17 @@
     .metric .value{
       font-size: 16px;
       font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .metric .hint{
       margin-top: 4px;
       font-size: 12px;
       color: rgba(229,231,235,0.8);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     pre{
@@ -234,7 +280,7 @@
       border: 1px solid rgba(31,41,55,0.9);
       overflow-x: auto;
       font-size: 12px;
-      display:none; /* nu mai arătăm “comenzi GET” */
+      display:none;
     }
 
     /* Footer identical to home */
@@ -287,9 +333,8 @@
 
       <div class="header-title">ProsumatorPlanner – Live</div>
 
-      <div class="header-right">
-        <a class="btn" href="https://api.prosumatorplanner.ro/docs" target="_blank" rel="noopener">Swagger</a>
-      </div>
+      <!-- Swagger button removed by request -->
+      <div class="header-right"></div>
     </div>
   </header>
 
@@ -319,10 +364,13 @@
           <div class="actions">
             <button class="btn btn-primary" id="btnLatest">Fetch latest</button>
             <button class="btn btn-primary" id="btnSummary">Fetch summary</button>
-            <button class="btn" id="btnHistory">Fetch history (Premium)</button>
+            <button class="btn btn-ghost" id="btnHistory">Fetch history (Premium)</button>
           </div>
 
-          <div class="status" id="status">Status: aștept token.</div>
+          <div class="status" id="statusRow">
+            <span class="chip"><span class="dot" id="statusDot"></span><span id="statusText">Status: aștept token.</span></span>
+            <span class="chip" id="apiHint">API: api.prosumatorplanner.ro</span>
+          </div>
         </div>
 
         <div class="card">
@@ -332,35 +380,36 @@
             <div class="metric">
               <div class="label">PV</div>
               <div class="value" id="pv">—</div>
-              <div class="hint">kW (instant)</div>
+              <div class="hint" id="pvHint">kW (instant)</div>
             </div>
             <div class="metric">
               <div class="label">House</div>
               <div class="value" id="house">—</div>
-              <div class="hint">kW (instant)</div>
+              <div class="hint" id="houseHint">kW (instant)</div>
             </div>
             <div class="metric">
               <div class="label">Grid</div>
               <div class="value" id="grid">—</div>
-              <div class="hint">import/export kW</div>
+              <div class="hint" id="gridHint">import / export kW</div>
             </div>
             <div class="metric">
               <div class="label">Battery</div>
               <div class="value" id="soc">—</div>
-              <div class="hint">SOC %</div>
+              <div class="hint" id="socHint">SOC %</div>
             </div>
             <div class="metric">
               <div class="label">Status</div>
               <div class="value" id="connected">—</div>
-              <div class="hint">connected / last_update</div>
+              <div class="hint" id="statusHint">last update: —</div>
             </div>
             <div class="metric">
               <div class="label">Max PV today</div>
               <div class="value" id="maxpv">—</div>
-              <div class="hint">kW (azi)</div>
+              <div class="hint" id="maxpvHint">kW (azi)</div>
             </div>
           </div>
 
+          <!-- hidden by default; enable with ?debug=1 -->
           <pre id="raw"></pre>
         </div>
       </div>
@@ -388,7 +437,10 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const API_BASE = "https://api.prosumatorplanner.ro";
-    const statusEl = document.getElementById("status");
+    const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
+
+    const statusTextEl = document.getElementById("statusText");
+    const statusDotEl = document.getElementById("statusDot");
     const rawEl = document.getElementById("raw");
 
     const elPv = document.getElementById("pv");
@@ -397,6 +449,11 @@
     const elSoc = document.getElementById("soc");
     const elConnected = document.getElementById("connected");
     const elMaxPv = document.getElementById("maxpv");
+    const elStatusHint = document.getElementById("statusHint");
+
+    const btnLatest = document.getElementById("btnLatest");
+    const btnSummary = document.getElementById("btnSummary");
+    const btnHistory = document.getElementById("btnHistory");
 
     function getAuthHeader() {
       const token = document.getElementById("token").value.trim();
@@ -409,93 +466,212 @@
       return Number.isFinite(v) && v > 0 ? v : 1;
     }
 
-    function setStatus(msg, isError=false) {
-      statusEl.textContent = `Status: ${msg}`;
-      statusEl.style.color = isError ? "#fca5a5" : "";
+    function setStatus(msg, kind="neutral") {
+      statusTextEl.textContent = `Status: ${msg}`;
+      statusDotEl.classList.remove("ok","err","warn");
+      if (kind === "ok") statusDotEl.classList.add("ok");
+      if (kind === "err") statusDotEl.classList.add("err");
+      if (kind === "warn") statusDotEl.classList.add("warn");
+    }
+
+    function setLoading(isLoading) {
+      btnLatest.disabled = isLoading;
+      btnSummary.disabled = isLoading;
+      btnHistory.disabled = isLoading;
     }
 
     function fmtNum(v) {
       if (v === null || v === undefined || v === "") return "—";
       const n = Number(v);
       if (!Number.isFinite(n)) return String(v);
-      return n.toFixed(3).replace(/\.?0+$/,""); // 2.350 -> 2.35
+      return n.toFixed(3).replace(/\.?0+$/,"");
     }
 
-    function updateFromLatest(data) {
-      // așteptăm structura din backend: { ok, site_id, connected, last_update, latest, max_pv_kw_today }
-      const latest = data.latest || {};
-      elPv.textContent = fmtNum(latest.pv_kw);
-      elHouse.textContent = fmtNum(latest.house_kw);
-
-      // grid import/export afișăm compact
-      const gi = fmtNum(latest.grid_import_kw);
-      const ge = fmtNum(latest.grid_export_kw);
-      elGrid.textContent = `${gi} / ${ge}`;
-
-      elSoc.textContent = (latest.battery_soc === null || latest.battery_soc === undefined) ? "—" : `${latest.battery_soc}%`;
-
-      const conn = data.connected ? "connected" : "not connected";
-      const lu = data.last_update ? new Date(data.last_update).toISOString() : "—";
-      elConnected.textContent = conn;
-      elConnected.nextElementSibling && (elConnected.nextElementSibling.textContent = `connected / last_update: ${lu}`);
-
-      elMaxPv.textContent = fmtNum(data.max_pv_kw_today);
-    }
-
-    async function apiGet(path) {
-      const headers = getAuthHeader();
-      if (!headers) {
-        setStatus("token lipsă (nu permitem acces fără autentificare).", true);
-        return null;
+    function fmtISO(v) {
+      try {
+        if (!v) return "—";
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return String(v);
+        return d.toISOString().replace("T"," ").replace(".000Z","Z");
+      } catch {
+        return String(v || "—");
       }
+    }
 
-      setStatus("se încarcă…");
-      rawEl.style.display = "none";
-      rawEl.textContent = "";
+    function clearMetrics() {
+      elPv.textContent = "—";
+      elHouse.textContent = "—";
+      elGrid.textContent = "—";
+      elSoc.textContent = "—";
+      elConnected.textContent = "—";
+      elMaxPv.textContent = "—";
+      elStatusHint.textContent = "last update: —";
+    }
 
-      const url = `${API_BASE}${path}`;
+    function safeGet(obj, paths) {
+      for (const p of paths) {
+        const parts = p.split(".");
+        let cur = obj;
+        let ok = true;
+        for (const part of parts) {
+          if (cur && Object.prototype.hasOwnProperty.call(cur, part)) cur = cur[part];
+          else { ok = false; break; }
+        }
+        if (ok) return cur;
+      }
+      return undefined;
+    }
+
+    function normalizeLatest(data) {
+      // Acceptă mai multe structuri (în caz că backend-ul diferă ușor):
+      // A) { ok, connected, last_update, latest:{...}, max_pv_kw_today }
+      // B) { ok, data:{ connected, last_update, latest:{...} ... } }
+      const root = data && data.data ? data.data : data;
+
+      const latest = safeGet(root, ["latest", "data.latest", "payload.latest"]) || {};
+      const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
+      const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "latest.ts", "latest.timestamp"]);
+      const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+
+      const pv = safeGet(latest, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
+      const house = safeGet(latest, ["house_kw", "load_kw", "house", "consumption_kw"]);
+      const gi = safeGet(latest, ["grid_import_kw", "gridImportKw", "import_kw"]);
+      const ge = safeGet(latest, ["grid_export_kw", "gridExportKw", "export_kw"]);
+      const soc = safeGet(latest, ["battery_soc", "soc", "batterySoc"]);
+
+      return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
+    }
+
+    function normalizeSummary(data) {
+      // Acceptă mai multe structuri posibile:
+      // A) { ok, summary:{...}, connected, last_update, max_pv_kw_today }
+      // B) { ok, data:{ summary:{...} ... } }
+      const root = data && data.data ? data.data : data;
+      const sum = safeGet(root, ["summary", "data.summary", "payload.summary"]) || root || {};
+
+      // Preferăm chei „summary”, dar dacă backend-ul întoarce direct câmpurile, merge și așa.
+      const pv = safeGet(sum, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
+      const house = safeGet(sum, ["house_kw", "load_kw", "house", "consumption_kw"]);
+      const gi = safeGet(sum, ["grid_import_kw", "gridImportKw", "import_kw"]);
+      const ge = safeGet(sum, ["grid_export_kw", "gridExportKw", "export_kw"]);
+      const soc = safeGet(sum, ["battery_soc", "soc", "batterySoc"]);
+
+      const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
+      const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "timestamp"]);
+      const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+
+      return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
+    }
+
+    function applyMetrics(m) {
+      elPv.textContent = fmtNum(m.pv);
+      elHouse.textContent = fmtNum(m.house);
+
+      const gi = fmtNum(m.gi);
+      const ge = fmtNum(m.ge);
+      elGrid.textContent = (gi === "—" && ge === "—") ? "—" : `${gi} / ${ge}`;
+
+      elSoc.textContent = (m.soc === null || m.soc === undefined || m.soc === "") ? "—" : `${fmtNum(m.soc)}%`;
+
+      elConnected.textContent = m.connected ? "connected" : "offline";
+      elStatusHint.textContent = `last update: ${fmtISO(m.lastUpdate)}`;
+
+      elMaxPv.textContent = fmtNum(m.maxPvToday);
+    }
+
+    async function fetchJsonOrText(url, headers) {
       const res = await fetch(url, { headers });
       const text = await res.text();
-
       let json = null;
       try { json = JSON.parse(text); } catch(_) {}
+      return { res, text, json };
+    }
 
-      if (!res.ok) {
-        const msg = (json && (json.message || json.error)) ? (json.message || json.error) : `HTTP ${res.status}`;
-        setStatus(msg, true);
-
-        // pentru debug (doar dacă vrei): afișăm răspunsul brut
-        rawEl.style.display = "block";
-        rawEl.textContent = text;
+    async function apiGetWithFallbacks(variantPaths) {
+      const headers = getAuthHeader();
+      if (!headers) {
+        setStatus("token lipsă (nu permitem acces fără autentificare).", "err");
         return null;
       }
 
-      setStatus("OK");
-      return json ?? text;
+      setLoading(true);
+      setStatus("se încarcă…", "warn");
+
+      if (DEBUG) { rawEl.style.display = "none"; rawEl.textContent = ""; }
+
+      // încercăm pe rând mai multe variante de path (pentru „Ruta nu a fost găsită”)
+      let lastError = null;
+
+      for (const path of variantPaths) {
+        const url = `${API_BASE}${path}`;
+        const { res, text, json } = await fetchJsonOrText(url, headers);
+
+        if (res.ok) {
+          setStatus("OK", "ok");
+          setLoading(false);
+          if (DEBUG) {
+            rawEl.style.display = "block";
+            rawEl.textContent = json ? JSON.stringify(json, null, 2) : text;
+          }
+          return json ?? text;
+        }
+
+        // dacă e 404, încercăm următoarea variantă
+        if (res.status === 404) {
+          lastError = json?.message || json?.error || `404 on ${path}`;
+          continue;
+        }
+
+        // alte erori: arătăm mesajul și oprim
+        const msg = (json && (json.message || json.error)) ? (json.message || json.error) : `HTTP ${res.status}`;
+        setStatus(msg, "err");
+
+        if (DEBUG) {
+          rawEl.style.display = "block";
+          rawEl.textContent = text;
+        }
+        setLoading(false);
+        return null;
+      }
+
+      setStatus(lastError || "Ruta nu a fost găsită.", "err");
+      setLoading(false);
+      return null;
     }
 
-    document.getElementById("btnLatest").addEventListener("click", async () => {
+    // Events
+    btnLatest.addEventListener("click", async () => {
       const siteId = getSiteId();
-      const data = await apiGet(`/api/live/latest?site_id=${encodeURIComponent(siteId)}`);
+      const encoded = encodeURIComponent(siteId);
+
+      // variantă principală + fallback (dacă backend-ul e /latest/:site_id)
+      const data = await apiGetWithFallbacks([
+        `/api/live/latest?site_id=${encoded}`,
+        `/api/live/latest/${encoded}`
+      ]);
       if (!data) return;
 
-      updateFromLatest(data);
-      rawEl.style.display = "block";
-      rawEl.textContent = JSON.stringify(data, null, 2);
+      const m = normalizeLatest(data);
+      applyMetrics(m);
     });
 
-    document.getElementById("btnSummary").addEventListener("click", async () => {
+    btnSummary.addEventListener("click", async () => {
       const siteId = getSiteId();
-      const data = await apiGet(`/api/live/summary?site_id=${encodeURIComponent(siteId)}`);
+      const encoded = encodeURIComponent(siteId);
+
+      const data = await apiGetWithFallbacks([
+        `/api/live/summary?site_id=${encoded}`,
+        `/api/live/summary/${encoded}`
+      ]);
       if (!data) return;
 
-      // summary poate fi diferit ca structură; îl arătăm ca raw (și apoi rafinăm)
-      rawEl.style.display = "block";
-      rawEl.textContent = JSON.stringify(data, null, 2);
+      const m = normalizeSummary(data);
+      applyMetrics(m);
     });
 
-    document.getElementById("btnHistory").addEventListener("click", async () => {
+    btnHistory.addEventListener("click", async () => {
       const siteId = getSiteId();
+      const encoded = encodeURIComponent(siteId);
 
       // interval default: ultimele 24h (UTC) + bucket 5
       const now = new Date();
@@ -503,12 +679,21 @@
       const from = new Date(now.getTime() - 24*60*60*1000).toISOString();
       const bucket = 5;
 
-      const data = await apiGet(`/api/live/history?site_id=${encodeURIComponent(siteId)}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`);
+      const data = await apiGetWithFallbacks([
+        `/api/live/history?site_id=${encoded}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`,
+        `/api/live/history/${encoded}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`
+      ]);
+
+      // dacă e premium_required, e OK (backend-ul face treaba), doar rămân metricile neschimbate
       if (!data) return;
 
-      rawEl.style.display = "block";
-      rawEl.textContent = JSON.stringify(data, null, 2);
+      // Pentru history nu mapăm în carduri (încă). Dacă vrei, îl facem grafic în v2 (sau o listă compactă).
+      setStatus("history OK (debug only).", "ok");
     });
+
+    // init
+    clearMetrics();
+    setStatus("aștept token.", "neutral");
   </script>
 </body>
 </html>
