@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resetare parolă – ProsumatorPlanner</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#0f1115; color:#e7e7ea; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px; }
+    .card { background:#151824; border:1px solid rgba(255,255,255,.1); border-radius:16px; padding:20px; }
+    .muted { color:#b7b7c2; }
+    .ok { color:#a6ffcb; }
+    .bad { color:#ffb4b4; }
+    .row { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06); color:#e7e7ea; }
+    button { padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.10); color:#e7e7ea; cursor:pointer; }
+    a { color:#c9b6ff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Resetare parolă</h1>
+    <div class="card">
+      <p class="muted">Introdu parola nouă (minim 8 caractere).</p>
+
+      <div class="row">
+        <input id="p1" type="password" placeholder="Parolă nouă" />
+        <input id="p2" type="password" placeholder="Confirmă parola" />
+      </div>
+
+      <div class="row">
+        <button id="btn">Resetează parola</button>
+        <a href="/" style="align-self:center">Înapoi la site</a>
+      </div>
+
+      <p id="status" class="muted"></p>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const btn = document.getElementById("btn");
+    const p1 = document.getElementById("p1");
+    const p2 = document.getElementById("p2");
+
+    const token = new URLSearchParams(location.search).get("token");
+    if (!token) {
+      statusEl.textContent = "Lipsește token-ul din URL. (ex: /reset?token=...)";
+      statusEl.className = "bad";
+      btn.disabled = true;
+    }
+
+    btn.addEventListener("click", () => {
+      const a = (p1.value || "").trim();
+      const b = (p2.value || "").trim();
+      if (a.length < 8) {
+        statusEl.textContent = "Parola trebuie să aibă minim 8 caractere.";
+        statusEl.className = "bad";
+        return;
+      }
+      if (a !== b) {
+        statusEl.textContent = "Parolele nu coincid.";
+        statusEl.className = "bad";
+        return;
+      }
+
+      const API_BASE = "https://api.prosumatorplanner.ro";
+
+      statusEl.textContent = "Se trimite…";
+      statusEl.className = "muted";
+
+      fetch(`${API_BASE}/api/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword: a })
+      })
+      .then(r => r.json().catch(() => ({})))
+      .then(data => {
+        if (data && data.status === "success") {
+          statusEl.textContent = data.message || "Parola a fost resetată cu succes.";
+          statusEl.className = "ok";
+        } else {
+          statusEl.textContent = (data && data.message) ? data.message : "Resetarea a eșuat (token invalid/expirat).";
+          statusEl.className = "bad";
+        }
+      })
+      .catch(() => {
+        statusEl.textContent = "Nu pot contacta serverul API. Verifică API_BASE.";
+        statusEl.className = "bad";
+      });
+    });
+  </script>
+</body>
+</html>
