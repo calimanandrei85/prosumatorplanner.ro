@@ -2,9 +2,9 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>ProsumatorPlanner – Live</title>
+  <title>ProsumatorPlanner – Live API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ProsumatorPlanner Live – valori în timp real (cu autentificare)." />
+  <meta name="description" content="ProsumatorPlanner Live API – valori în timp real (cu autentificare)." />
 
   <style>
     :root{
@@ -16,19 +16,22 @@
       --danger:#fca5a5;
       --ok:#86efac;
       --warn:#fde68a;
+      --bg:#020617;
+      --card:#0b1220;
+      --chip:#0f172a;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *{ box-sizing:border-box; }
     body{
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(15,118,110,0.18), transparent 60%),
+                  radial-gradient(1000px 500px at 90% 0%, rgba(37,99,235,0.12), transparent 55%),
+                  var(--bg);
       color: var(--text-main);
-      line-height: 1.6;
       min-height: 100vh;
-      display: flex;
+      display:flex;
       flex-direction: column;
     }
-    a{ color: inherit; text-decoration: none; }
-    a:hover{ text-decoration: underline; }
 
     header{
       position: sticky;
@@ -47,7 +50,8 @@
       align-items: center;
       gap: 12px;
     }
-    .header-left{ display:flex; align-items:center; justify-content:flex-start; }
+
+    .header-left{ display:flex; align-items:center; gap: 10px; }
     .header-title{
       text-align:center;
       font-weight: 800;
@@ -67,199 +71,228 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease, border-color 0.2s ease;
-      background: rgba(2, 6, 23, 0.55);
+      background: rgba(15, 23, 42, 0.4);
       color: var(--text-main);
+      text-decoration: none;
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+      user-select: none;
     }
     .btn:hover{
-      transform: translateY(-1px);
-      border-color: rgba(34,197,94,0.6);
-      box-shadow: 0 10px 25px rgba(15,23,42,0.35);
-      text-decoration: none;
+      background: rgba(15, 23, 42, 0.7);
+      border-color: rgba(255,255,255,0.16);
     }
-    .btn-primary{
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-color: rgba(31,41,55,0.9);
-      color: #ecfeff;
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(15,118,110,0.85), rgba(17,94,89,0.85));
+      border-color: rgba(15,118,110,0.55);
     }
-    .btn-primary:hover{ box-shadow: 0 14px 30px rgba(8,47,35,0.6); }
-    .btn-ghost{ background: rgba(2, 6, 23, 0.35); }
-    .btn:disabled{ opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .icon{
-      width: 22px;
-      height: 22px;
-      border-radius: 8px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: radial-gradient(circle at 30% 0, #a7f3d0, #22c55e 40%, #0f766e 100%);
-      color: #022c22;
-      font-weight: 900;
-      font-size: 14px;
+    .btn.primary:hover{
+      background: linear-gradient(180deg, rgba(15,118,110,0.95), rgba(17,94,89,0.95));
+    }
+    .btn:disabled{
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     main{
-      width: 100%;
-      max-width: 1100px;
-      margin: 18px auto 0;
-      padding: 0 16px 18px;
       flex: 1;
+      width: 100%;
     }
-
-    .panel{
-      background: rgba(15,23,42,0.92);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 26px;
     }
-
-    .kicker{
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #6ee7b7;
-      margin-bottom: 10px;
-    }
-    h2{ font-size: 22px; margin-bottom: 8px; }
-    .subtitle{ color: var(--text-muted); font-size: 14px; max-width: 800px; }
 
     .grid{
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+      .header-inner{ grid-template-columns: 1fr; }
+      .header-title{ text-align:left; }
+      .header-right{ justify-content:flex-start; }
     }
 
     .card{
-      background: rgba(2,6,23,0.6);
-      border: 1px solid var(--border);
-      border-radius: 16px;
+      background: rgba(11, 18, 32, 0.86);
+      border: 1px solid rgba(31,41,55,0.9);
+      border-radius: 18px;
       padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
-    .card h3{ font-size: 14px; margin-bottom: 8px; }
-
-    .form-group{ display:flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-    label{ font-size: 13px; color: var(--text-main); font-weight: 600; }
-    input, textarea{
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.75);
-      color: var(--text-main);
+    .card h3{
+      margin: 0 0 10px 0;
       font-size: 14px;
-      outline: none;
+      color: rgba(229,231,235,0.9);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
     }
-    input:focus, textarea:focus{ border-color: rgba(34,197,94,0.6); }
 
-    .actions{ display:flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-
-    .status{
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--text-muted);
+    .row{
       display:flex;
-      align-items:center;
-      gap:10px;
       flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .row + .row{ margin-top: 10px; }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="number"]{
+      width: 100%;
+      background: rgba(2,6,23,0.6);
+      border: 1px solid rgba(31,41,55,0.95);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color .15s ease;
+      font-size: 14px;
+    }
+    input[type="text"]:focus, input[type="number"]:focus{
+      border-color: rgba(15,118,110,0.7);
+    }
+
+    .field{
+      flex: 1 1 220px;
+      min-width: 220px;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      align-items:center;
     }
     .chip{
       display:inline-flex;
       align-items:center;
-      gap:8px;
+      gap: 8px;
+      background: rgba(15,23,42,0.55);
+      border: 1px solid rgba(31,41,55,0.85);
       padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(2,6,23,0.45);
       font-size: 12px;
-      color: rgba(229,231,235,0.85);
-      max-width: 100%;
-    }
-    .chip span.txt{
+      color: rgba(229,231,235,0.82);
+      user-select:none;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 720px;
-      display: inline-block;
-      vertical-align: bottom;
     }
     .dot{
-      width: 8px;
-      height: 8px;
-      border-radius: 99px;
-      background: rgba(156,163,175,0.8);
-      box-shadow: 0 0 0 4px rgba(156,163,175,0.10);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(156,163,175,0.65);
+      box-shadow: 0 0 0 3px rgba(156,163,175,0.08);
     }
-    .dot.ok{ background: var(--ok); box-shadow: 0 0 0 4px rgba(134,239,172,0.12); }
-    .dot.err{ background: var(--danger); box-shadow: 0 0 0 4px rgba(252,165,165,0.10); }
-    .dot.warn{ background: var(--warn); box-shadow: 0 0 0 4px rgba(253,230,138,0.10); }
+    .dot.ok{ background: var(--ok); box-shadow: 0 0 0 3px rgba(134,239,172,0.10); }
+    .dot.err{ background: var(--danger); box-shadow: 0 0 0 3px rgba(252,165,165,0.10); }
+    .dot.warn{ background: var(--warn); box-shadow: 0 0 0 3px rgba(253,230,138,0.10); }
 
     .results{
-      margin-top: 16px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
+    @media (max-width: 520px){
+      .results{ grid-template-columns: 1fr; }
+    }
+
     .metric{
-      background: rgba(15,23,42,0.85);
-      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.55);
+      border: 1px solid rgba(31,41,55,0.85);
       border-radius: 14px;
-      padding: 12px;
-      min-height: 86px;
+      padding: 10px 10px 9px;
     }
     .metric .label{
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 4px;
+      font-size: 12px;
+      color: rgba(156,163,175,0.9);
+      margin-bottom: 6px;
     }
-    .metric .value{ font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .metric .hint{ margin-top: 4px; font-size: 12px; color: rgba(229,231,235,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .metric .value{
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .metric .hint{
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(156,163,175,0.78);
+    }
 
     pre{
+      background: rgba(2,6,23,0.7);
+      border: 1px solid rgba(31,41,55,0.85);
+      border-radius: 14px;
+      padding: 10px;
+      color: rgba(229,231,235,0.88);
+      overflow:auto;
       margin-top: 10px;
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(31,41,55,0.9);
-      overflow-x: auto;
       font-size: 12px;
-      display:none;
+      max-height: 300px;
+      display: none;
     }
 
-    .site-footer{
+    /* Footer (same as index.html) */
+    .site-footer {
       border-top: 1px solid var(--border);
       padding: 16px 20px;
       font-size: 12px;
       background: #020617;
       color: var(--text-muted);
+      margin-top: 18px;
     }
-    .footer-inner{
+
+    .footer-inner {
       max-width: 1100px;
       margin: 0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       flex-wrap: wrap;
     }
-    .footer-left{ display:flex; flex-direction: column; gap: 2px; }
-    .footer-app-name{ font-weight: 700; color: var(--text-main); }
-    .footer-copy{ font-size: 11px; color: var(--text-muted); }
-    .footer-links{ display:flex; align-items:center; gap: 8px; flex-wrap: wrap; }
-    .footer-links a{ color: var(--text-muted); text-decoration:none; }
-    .footer-links a:hover{ color: var(--text-main); text-decoration: underline; }
-    .footer-divider{ opacity: 0.6; }
 
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-      .results{ grid-template-columns: 1fr;oredsejk; } /* harmless if ignored by browser */
-      .header-right{ display:none; }
-      .chip span.txt{ max-width: 92vw; }
+    .footer-left { display: flex; flex-direction: column; gap: 2px; }
+
+    .footer-app-name { font-weight: 600; color: var(--text-main); }
+
+    .footer-copy { font-size: 11px; color: var(--text-muted); }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      flex-wrap: wrap;
     }
+
+    .footer-links a { color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text-main); text-decoration: underline; }
+    .footer-divider { opacity: 0.6; }
+
+    .icon{
+      width: 18px; height: 18px;
+      display:inline-grid;
+      place-items:center;
+      border-radius: 6px;
+      background: rgba(15,118,110,0.18);
+      border: 1px solid rgba(15,118,110,0.28);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: -0.03em;
+    }
+
+    /* Debug-only elements */
+    .debug-only { display: none; }
   </style>
 </head>
 
@@ -272,47 +305,41 @@
           Înapoi acasă
         </a>
       </div>
-      <div class="header-title">ProsumatorPlanner – Live</div>
+      <div class="header-title">ProsumatorPlanner – Live API</div>
       <div class="header-right"></div>
     </div>
   </header>
 
   <main>
-    <div class="panel">
-      <div class="kicker">Live · Autentificat · Real-time</div>
-      <h2>Live UI (doar cu autentificare)</h2>
-      <p class="subtitle">
-        Această pagină nu expune date publice. Pentru a vedea valori, introdu un token JWT valid.
-        Token-ul este folosit doar în browser-ul tău pentru a apela API-ul.
-      </p>
-
+    <div class="wrap">
       <div class="grid">
         <div class="card">
-          <h3>Autentificare</h3>
+          <h3>Setări</h3>
 
-          <div class="form-group">
-            <label for="siteId">Site ID</label>
-            <input id="siteId" type="number" min="1" step="1" value="1" />
+          <div class="row">
+            <div class="field">
+              <label for="siteId">Site ID</label>
+              <input id="siteId" type="number" value="1" min="1" />
+            </div>
+            <div class="field">
+              <label for="token">Token (JWT)</label>
+              <input id="token" type="text" placeholder="Bearer token..." />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="token">Token JWT (Bearer)</label>
-            <textarea id="token" rows="4" placeholder="Lipește aici token-ul (fără 'Bearer ')"></textarea>
+          <div class="row">
+            <button class="btn primary" id="btnLatest">Preia ultimele valori</button>
+            <button class="btn" id="btnSummary">Preia sumar</button>
+            <button class="btn" id="btnHistory">Istoric (Premium)</button>
           </div>
 
-          <div class="actions">
-            <button class="btn btn-primary" id="btnLatest">Preia ultimele valori</button>
-            <button class="btn btn-primary" id="btnSummary">Preia sumar</button>
-            <button class="btn btn-ghost" id="btnHistory">Istoric (Premium)</button>
-          </div>
-
-          <div class="status" id="statusRow">
+          <div class="chips">
             <span class="chip">
               <span class="dot" id="statusDot"></span>
-              <span class="txt" id="statusText">Status: aștept token.</span>
+              <span id="statusText">Status: aștept token (autentificare necesară).</span>
             </span>
             <span class="chip" id="apiHint"><span class="txt">API: api.prosumatorplanner.ro</span></span>
-            <span class="chip" id="lastUrlChip" style="display:none;"><span class="txt" id="lastUrlText">URL: —</span></span>
+            <span class="chip debug-only" id="lastUrlChip" style="display:none;"><span class="txt" id="lastUrlText">URL: —</span></span>
           </div>
         </div>
 
@@ -326,33 +353,33 @@
               <div class="hint">kW (instant)</div>
             </div>
             <div class="metric">
-              <div class="label">House</div>
+              <div class="label">Consum</div>
               <div class="value" id="house">—</div>
               <div class="hint">kW (instant)</div>
             </div>
             <div class="metric">
-              <div class="label">Grid</div>
+              <div class="label">Rețea</div>
               <div class="value" id="grid">—</div>
-              <div class="hint">import / export kW</div>
+              <div class="hint">import / export (kW)</div>
             </div>
             <div class="metric">
-              <div class="label">Battery</div>
+              <div class="label">Baterie</div>
               <div class="value" id="soc">—</div>
-              <div class="hint">SOC %</div>
+              <div class="hint">SOC (%)</div>
             </div>
             <div class="metric">
-              <div class="label">Status</div>
+              <div class="label">Conectare</div>
               <div class="value" id="connected">—</div>
-              <div class="hint" id="statusHint">last update: —</div>
+              <div class="hint" id="statusHint">ultima actualizare: —</div>
             </div>
             <div class="metric">
-              <div class="label">Max PV today</div>
+              <div class="label">Max PV azi</div>
               <div class="value" id="maxpv">—</div>
-              <div class="hint">kW (azi)</div>
+              <div class="hint">kW (astăzi)</div>
             </div>
           </div>
 
-          <pre id="raw"></pre>
+          <pre id="raw" class="debug-only" style="display:none;"></pre>
         </div>
       </div>
     </div>
@@ -366,7 +393,7 @@
       </div>
 
       <div class="footer-links">
-        <a href="live.html">Live</a>
+        <a href="live.html">Live API</a>
         <span class="footer-divider">•</span>
         <a href="privacy-policy.html">Privacy Policy</a>
         <span class="footer-divider">•</span>
@@ -376,297 +403,204 @@
   </footer>
 
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  // Footer year
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-    const API_BASE = "https://api.prosumatorplanner.ro";
-    const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
+  const API_BASE = "https://api.prosumatorplanner.ro";
+  const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
 
-    const statusTextEl = document.getElementById("statusText");
-    const statusDotEl = document.getElementById("statusDot");
-    const rawEl = document.getElementById("raw");
+  // Elements
+  const statusTextEl = document.getElementById("statusText");
+  const statusDotEl  = document.getElementById("statusDot");
 
-    const lastUrlChip = document.getElementById("lastUrlChip");
-    const lastUrlText = document.getElementById("lastUrlText");
+  const lastUrlChip = document.getElementById("lastUrlChip");
+  const lastUrlText = document.getElementById("lastUrlText");
+  const rawEl       = document.getElementById("raw");
 
-    const elPv = document.getElementById("pv");
-    const elHouse = document.getElementById("house");
-    const elGrid = document.getElementById("grid");
-    const elSoc = document.getElementById("soc");
-    const elConnected = document.getElementById("connected");
-    const elMaxPv = document.getElementById("maxpv");
-    const elStatusHint = document.getElementById("statusHint");
+  const btnLatest  = document.getElementById("btnLatest");
+  const btnSummary = document.getElementById("btnSummary");
+  const btnHistory = document.getElementById("btnHistory");
 
-    const btnLatest = document.getElementById("btnLatest");
-    const btnSummary = document.getElementById("btnSummary");
-    const btnHistory = document.getElementById("btnHistory");
+  const elPv       = document.getElementById("pv");
+  const elHouse    = document.getElementById("house");
+  const elGrid     = document.getElementById("grid");
+  const elSoc      = document.getElementById("soc");
+  const elConnected= document.getElementById("connected");
+  const elStatusHint = document.getElementById("statusHint");
+  const elMaxPv    = document.getElementById("maxpv");
 
-    function resetDebugUI() {
-      // la fiecare click, înainte de request: curățăm complet
-      rawEl.style.display = "none";
-      rawEl.textContent = "";
-      if (DEBUG) {
-        lastUrlChip.style.display = "inline-flex";
-        lastUrlText.textContent = "URL: —";
-      } else {
-        lastUrlChip.style.display = "none";
-      }
-    }
+  function setDebugVisible() {
+    const debugEls = document.querySelectorAll(".debug-only");
+    debugEls.forEach(el => { el.style.display = DEBUG ? "" : "none"; });
 
-    function showLastUrl(url){
-      if (!DEBUG) return;
-      lastUrlChip.style.display = "inline-flex";
-      lastUrlText.textContent = `URL: ${url}`;
-    }
+    // Keep the URL chip hidden unless DEBUG and we have a URL to show
+    if (!DEBUG && lastUrlChip) lastUrlChip.style.display = "none";
+    if (!DEBUG && rawEl) rawEl.style.display = "none";
+  }
 
-    function getAuthHeader() {
-      const token = document.getElementById("token").value.trim();
-      if (!token) return null;
-      return { "Authorization": `Bearer ${token}` };
-    }
+  function setStatus(msg, kind="neutral") {
+    statusTextEl.textContent = `Status: ${msg}`;
+    statusDotEl.classList.remove("ok", "err", "warn");
+    if (kind === "ok") statusDotEl.classList.add("ok");
+    if (kind === "err") statusDotEl.classList.add("err");
+    if (kind === "warn") statusDotEl.classList.add("warn");
+  }
 
-    function getSiteId() {
-      const v = Number(document.getElementById("siteId").value);
-      return Number.isFinite(v) && v > 0 ? v : 1;
-    }
+  function setLoading(isLoading) {
+    btnLatest.disabled = isLoading;
+    btnSummary.disabled = isLoading;
+    btnHistory.disabled = isLoading;
+  }
 
-    function setStatus(msg, kind="neutral") {
-      statusTextEl.textContent = `Status: ${msg}`;
-      statusDotEl.classList.remove("ok","err","warn");
-      if (kind === "ok") statusDotEl.classList.add("ok");
-      if (kind === "err") statusDotEl.classList.add("err");
-      if (kind === "warn") statusDotEl.classList.add("warn");
-    }
+  function fmtNum(v) {
+    if (v === null || v === undefined || v === "") return "—";
+    const n = Number(v);
+    if (!Number.isFinite(n)) return String(v);
+    return n.toLocaleString("ro-RO", { minimumFractionDigits: 0, maximumFractionDigits: 3 });
+  }
 
-    function setLoading(isLoading) {
-      btnLatest.disabled = isLoading;
-      btnSummary.disabled = isLoading;
-      btnHistory.disabled = isLoading;
-    }
+  function clearMetrics() {
+    elPv.textContent = "—";
+    elHouse.textContent = "—";
+    elGrid.textContent = "—";
+    elSoc.textContent = "—";
+    elConnected.textContent = "—";
+    elStatusHint.textContent = "ultima actualizare: —";
+    elMaxPv.textContent = "—";
+    if (DEBUG && rawEl) rawEl.textContent = "";
+    if (lastUrlChip) lastUrlChip.style.display = "none";
+  }
 
-    function fmtNum(v) {
-      if (v === null || v === undefined || v === "") return "—";
-      const n = Number(v);
-      if (!Number.isFinite(n)) return String(v);
-      return n.toFixed(3).replace(/\.?0+$/,"");
-    }
+  function applySnapshot(data) {
+    // Backend contract (v1.0):
+    // { ok, site_id, connected, last_update, latest, max_pv_kw_today }
+    const root = data && data.data ? data.data : data;
 
-    function fmtISO(v) {
-      try {
-        if (!v) return "—";
-        const d = new Date(v);
-        if (isNaN(d.getTime())) return String(v);
-        return d.toISOString().replace("T"," ").replace(".000Z","Z");
-      } catch {
-        return String(v || "—");
-      }
-    }
+    const latest = root && root.latest ? root.latest : null;
 
-    function clearMetrics() {
-      elPv.textContent = "—";
-      elHouse.textContent = "—";
-      elGrid.textContent = "—";
-      elSoc.textContent = "—";
-      elConnected.textContent = "—";
-      elMaxPv.textContent = "—";
-      elStatusHint.textContent = "last update: —";
-    }
+    const pv = latest ? latest.pv_kw : null;
+    const house = latest ? latest.house_kw : null;
+    const gi = latest ? latest.grid_import_kw : null;
+    const ge = latest ? latest.grid_export_kw : null;
+    const soc = latest ? latest.battery_soc : null;
 
-    function safeGet(obj, paths) {
-      for (const p of paths) {
-        const parts = p.split(".");
-        let cur = obj;
-        let ok = true;
-        for (const part of parts) {
-          if (cur && Object.prototype.hasOwnProperty.call(cur, part)) cur = cur[part];
-          else { ok = false; break; }
-        }
-        if (ok) return cur;
-      }
-      return undefined;
-    }
+    elPv.textContent = fmtNum(pv);
+    elHouse.textContent = fmtNum(house);
 
-    function normalizeFromLatestLike(root) {
-      const latest = safeGet(root, ["latest", "data.latest", "payload.latest"]) || {};
-      const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
-      const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "latest.ts", "latest.timestamp"]);
-      const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+    const giTxt = fmtNum(gi);
+    const geTxt = fmtNum(ge);
+    elGrid.textContent = `${giTxt} / ${geTxt}`;
 
-      const pv = safeGet(latest, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
-      const house = safeGet(latest, ["house_kw", "load_kw", "house", "consumption_kw"]);
-      const gi = safeGet(latest, ["grid_import_kw", "gridImportKw", "import_kw"]);
-      const ge = safeGet(latest, ["grid_export_kw", "gridExportKw", "export_kw"]);
-      const soc = safeGet(latest, ["battery_soc", "soc", "batterySoc"]);
+    elSoc.textContent = soc === null || soc === undefined ? "—" : `${soc}%`;
 
-      return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
-    }
+    const connected = !!(root && root.connected);
+    elConnected.textContent = connected ? "Online" : "Offline";
 
-    function normalizeSummary(data) {
-      const root = data && data.data ? data.data : data;
+    const lastUpdate = root && root.last_update ? new Date(root.last_update) : null;
+    elStatusHint.textContent = lastUpdate && !isNaN(lastUpdate.getTime())
+      ? `ultima actualizare: ${lastUpdate.toLocaleString("ro-RO")}`
+      : "ultima actualizare: —";
 
-      const sum = safeGet(root, ["summary", "data.summary", "payload.summary"]);
-      if (sum) {
-        const pv = safeGet(sum, ["pv_kw", "pv", "pvPower", "pv_kw_inst"]);
-        const house = safeGet(sum, ["house_kw", "load_kw", "house", "consumption_kw"]);
-        const gi = safeGet(sum, ["grid_import_kw", "gridImportKw", "import_kw"]);
-        const ge = safeGet(sum, ["grid_export_kw", "gridExportKw", "export_kw"]);
-        const soc = safeGet(sum, ["battery_soc", "soc", "batterySoc"]);
+    elMaxPv.textContent = fmtNum(root ? root.max_pv_kw_today : null);
+  }
 
-        const connected = !!safeGet(root, ["connected", "status.connected", "is_connected"]);
-        const lastUpdate = safeGet(root, ["last_update", "lastUpdate", "timestamp"]);
-        const maxPvToday = safeGet(root, ["max_pv_kw_today", "maxPvKwToday", "max_pv_today_kw", "today.max_pv_kw"]);
+  function getAuthHeader() {
+    const token = document.getElementById("token").value.trim();
+    if (!token) return null;
+    return { "Authorization": `Bearer ${token}` };
+  }
 
-        return { pv, house, gi, ge, soc, connected, lastUpdate, maxPvToday };
-      }
+  function getSiteId() {
+    const v = Number(document.getElementById("siteId").value);
+    return Number.isFinite(v) && v > 0 ? v : 1;
+  }
 
-      return normalizeFromLatestLike(root);
-    }
-
-    function applyMetrics(m) {
-      elPv.textContent = fmtNum(m.pv);
-      elHouse.textContent = fmtNum(m.house);
-
-      const gi = fmtNum(m.gi);
-      const ge = fmtNum(m.ge);
-      elGrid.textContent = (gi === "—" && ge === "—") ? "—" : `${gi} / ${ge}`;
-
-      elSoc.textContent = (m.soc === null || m.soc === undefined || m.soc === "") ? "—" : `${fmtNum(m.soc)}%`;
-
-      elConnected.textContent = m.connected ? "connected" : "offline";
-      elStatusHint.textContent = `last update: ${fmtISO(m.lastUpdate)}`;
-
-      elMaxPv.textContent = fmtNum(m.maxPvToday);
-    }
-
-    async function fetchJsonOrText(url, headers) {
-      showLastUrl(url);
-      const res = await fetch(url, { headers });
-      const text = await res.text();
-      let json = null;
-      try { json = JSON.parse(text); } catch(_) {}
-      return { res, text, json };
-    }
-
-    async function apiGetWithFallbacks(variantPaths) {
-      const headers = getAuthHeader();
-      if (!headers) {
-        setStatus("token lipsă (acces interzis fără autentificare).", "err");
-        return null;
-      }
-
-      setLoading(true);
-      setStatus("se încarcă…", "warn");
-      resetDebugUI();
-
-      let last404 = null;
-
-      for (const path of variantPaths) {
-        const url = `${API_BASE}${path}`;
-        const { res, text, json } = await fetchJsonOrText(url, headers);
-
-        if (res.ok) {
-          setStatus("OK", "ok");
-          setLoading(false);
-
-          if (DEBUG) {
-            rawEl.style.display = "block";
-            rawEl.textContent = json ? JSON.stringify(json, null, 2) : text;
-          }
-          return json ?? text;
-        }
-
-        if (res.status === 404) {
-          last404 = `404 pe ${path}`;
-          continue;
-        }
-
-        const msg = (json && (json.message || json.error)) ? (json.message || json.error) : `HTTP ${res.status}`;
-        setStatus(msg, "err");
-
-        if (DEBUG) {
-          rawEl.style.display = "block";
-          rawEl.textContent = text;
-        }
-        setLoading(false);
-        return null;
-      }
-
-      setStatus(last404 || "Ruta nu a fost găsită.", "err");
-      setLoading(false);
-      // IMPORTANT: nu lăsăm RAW-ul vechi pe ecran în caz de 404
-      resetDebugUI();
+  async function apiGet(path) {
+    const headers = getAuthHeader();
+    if (!headers) {
+      setStatus("token lipsă (acces interzis fără autentificare).", "err");
       return null;
     }
 
-    btnLatest.addEventListener("click", async () => {
-      const siteId = getSiteId();
-      const encoded = encodeURIComponent(siteId);
+    const url = `${API_BASE}${path}`;
 
-      // FIX: încercăm întâi /api/live/latest (asta e ce lipsea)
-      const data = await apiGetWithFallbacks([
-        `/api/live/latest?site_id=${encoded}`,
-        `/api/live/latest/${encoded}`,
-        `/api/live/latest?siteId=${encoded}`,
-        `/api/live/latest?site=${encoded}`,
+    try {
+      setLoading(true);
+      clearMetrics();
+      setStatus("se încarcă…", "warn");
 
-        // fallback-uri vechi (dacă ai mutat mountpoint-ul în alt mediu)
-        `/live/latest?site_id=${encoded}`,
-        `/api/v1/live/latest?site_id=${encoded}`,
-        `/live/latest/${encoded}`
-      ]);
-
-      if (!data) return;
-
-      const root = data && data.data ? data.data : data;
-      const m = normalizeFromLatestLike(root);
-      applyMetrics(m);
-    });
-
-    btnSummary.addEventListener("click", async () => {
-      const siteId = getSiteId();
-      const encoded = encodeURIComponent(siteId);
-
-      const data = await apiGetWithFallbacks([
-        `/api/live/summary?site_id=${encoded}`,
-        `/api/live/summary/${encoded}`,
-        `/api/live/summary?siteId=${encoded}`,
-        `/api/v1/live/summary?site_id=${encoded}`,
-        `/live/summary?site_id=${encoded}`
-      ]);
-
-      if (!data) return;
-
-      const m = normalizeSummary(data);
-      applyMetrics(m);
-    });
-
-    btnHistory.addEventListener("click", async () => {
-      const siteId = getSiteId();
-      const encoded = encodeURIComponent(siteId);
-
-      const now = new Date();
-      const to = now.toISOString();
-      const from = new Date(now.getTime() - 24*60*60*1000).toISOString();
-      const bucket = 5;
-
-      const data = await apiGetWithFallbacks([
-        `/api/live/history?site_id=${encoded}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`,
-        `/api/live/history/${encoded}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`,
-        `/api/v1/live/history?site_id=${encoded}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket_minutes=${bucket}`
-      ]);
-
-      if (!data) return;
-
-      // În debug, dacă e premium_required, îl vezi în RAW + status (corect)
-      if (typeof data === "object" && data && data.error === "premium_required") {
-        setStatus("Premium necesar.", "warn");
-      } else {
-        setStatus("Istoric: OK (doar debug momentan).", "ok");
+      if (DEBUG && lastUrlChip) {
+        lastUrlText.textContent = `URL: ${url}`;
+        lastUrlChip.style.display = "";
       }
-    });
 
+      const res = await fetch(url, { headers });
+      const text = await res.text();
+      let json = null;
+      try { json = JSON.parse(text); } catch (_) {}
+
+      if (DEBUG && rawEl) rawEl.textContent = text;
+
+      if (res.status === 401) {
+        setStatus("neautorizat (token invalid/expirat).", "err");
+        return null;
+      }
+      if (res.status === 403) {
+        const err = (json && (json.error || json.message)) ? (json.error || json.message) : "interzis";
+        setStatus(`acces interzis (${err}).`, "warn");
+        return json || { ok:false, error: err };
+      }
+      if (!res.ok) {
+        setStatus(`eroare HTTP ${res.status}.`, "err");
+        return null;
+      }
+
+      setStatus("OK", "ok");
+      return json ?? {};
+    } catch (e) {
+      console.error(e);
+      setStatus("eroare de rețea (verifică conexiunea).", "err");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Handlers
+  btnLatest.addEventListener("click", async () => {
+    const siteId = getSiteId();
+    const data = await apiGet(`/api/live/latest?site_id=${encodeURIComponent(siteId)}`);
+    if (!data) return;
+    applySnapshot(data);
+  });
+
+  btnSummary.addEventListener("click", async () => {
+    const siteId = getSiteId();
+    const data = await apiGet(`/api/live/summary?site_id=${encodeURIComponent(siteId)}`);
+    if (!data) return;
+    applySnapshot(data);
+  });
+
+  btnHistory.addEventListener("click", async () => {
+    setLoading(true);
     clearMetrics();
-    setStatus("aștept token.", "neutral");
-    resetDebugUI();
+    const siteId = getSiteId();
+    const data = await apiGet(`/api/live/history?site_id=${encodeURIComponent(siteId)}`);
+    setLoading(false);
+
+    if (!data) return;
+
+    if (data && data.error === "premium_required") {
+      setStatus("Istoric: Premium necesar.", "warn");
+    } else {
+      setStatus("Istoric: disponibil în curând.", "warn");
+    }
+  });
+
+  // Init
+  setDebugVisible();
+  clearMetrics();
+  setStatus("aștept token (autentificare necesară).", "neutral");
   </script>
 </body>
 </html>
